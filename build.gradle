@@ -37,8 +37,9 @@ ext {
             rxjavaAdapter       : '2.5.0'
     ]
     okHttpVersion = [
-            version             : '3.12.0',
-            loggingInterceptor  : '4.0.1'
+            version             : '3.12.1',
+            loggingInterceptor  : '4.0.1',
+            mockWebServer       : '4.0.1'
     ]
     androidSupportTestVersion = [
             espresso            : '3.0.2',
@@ -50,4 +51,7 @@ ext {
             transformations     : "2.0.1"
     ]
     gsonVersion = "2.8.5"
+    coroutinesVersion = '1.3.0-M2'
+    daggerVersion = 2.16
+    mockitoKotlinVersion = '2.1.0'
 }

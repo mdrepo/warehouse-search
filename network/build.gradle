@@ -1,0 +1,53 @@
+apply plugin: 'com.android.library'
+apply from: "${rootProject.rootDir}/gradle/kotlin.gradle"
+apply from: "${rootProject.rootDir}/gradle/jacoco.gradle"
+apply from: "${rootProject.rootDir}/gradle/dagger.gradle"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.compileSdkVersion
+        buildConfigField "String", "SERVER_URL", '"https://twg.azure-api.net"'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildTypes.each { buildType ->
+        setSubscriptionKey(buildType)
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion.version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion.gsonConvertor"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion.loggingInterceptor"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+    testImplementation "com.squareup.okhttp3:mockwebserver:$okHttpVersion.mockWebServer"
+}
+
+ext {
+    jacocoExclusion += ["**/adapter/CoroutineCallAdapterFactory*",
+                        "**/api/**",
+                        "**/models/**"]
+}
+
+afterEvaluate { project ->
+    setupJacoco(project)
+}
+
+def setSubscriptionKey(buildType) {
+    def subscriptionPropertiesFile = rootProject.file("subscription_key.properties")
+    def subscriptionProperties = new Properties()
+    if (!subscriptionPropertiesFile.exists()) throw new IllegalStateException("subscription_key file missing")
+    subscriptionProperties.load(new FileInputStream(subscriptionPropertiesFile))
+    def subscription_key = subscriptionProperties["subscription_key"]
+    buildType.buildConfigField "String", "SUBSCRIPTION_KEY", "\"$subscription_key\""
+}
