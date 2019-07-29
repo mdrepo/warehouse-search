@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply from: "${rootProject.rootDir}/gradle/kotlin.gradle"
 apply from: "${rootProject.rootDir}/gradle/dagger.gradle"
+apply from: "${rootProject.rootDir}/gradle/robolectric.gradle"
+apply from: "${rootProject.rootDir}/gradle/jacoco.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -25,9 +27,6 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$androidxVersion.appCompat"
     implementation "androidx.constraintlayout:constraintlayout:$androidxVersion.constraintLayout"
 
-    testImplementation "junit:junit:$junitVersion"
-    androidTestImplementation "com.android.support.test:runner:$androidSupportTestVersion.runner"
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:$androidSupportTestVersion.espresso"
     implementation "com.android.support:design:$androidSupportVersion.design"
 
     // retrofit
@@ -56,9 +55,77 @@ dependencies {
 
     // android-dagger
     implementation "com.google.dagger:dagger-android:$daggerVersion"
-    implementation "com.google.dagger:dagger-android-support:$daggerVersion" // if support libraries are used
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
     kaptTest "com.google.dagger:dagger-android-processor:$daggerVersion"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.paging:paging-runtime-ktx:2.1.0'
+}
+
+afterEvaluate { project ->
+    setupJacoco(project)
+}
+
+FileTree getJacocoClassDirs(List projects) {
+    print("${project.ext.jacocoExclusion}")
+    def classDirs = fileTree(
+            dir: "${buildDir}",
+            include: project.ext.jacocoInclusion,
+            exclude: project.ext.jacocoExclusion
+    )
+    projects.each {
+        def projBuildDir = project(it).buildDir
+        classDirs += fileTree(
+                dir: "${projBuildDir}",
+                include: project.ext.jacocoInclusion,
+                exclude: project.ext.jacocoExclusion
+        )
+    }
+    return classDirs
+}
+
+FileCollection getJacocoSrcDirs(List projects) {
+    HashSet srcDirs = android.sourceSets.main.java.srcDirs
+    projects.each {
+        def projDir = project(it).projectDir
+        srcDirs.add("${projDir}/src/main")
+    }
+    return files(srcDirs)
+}
+
+FileCollection getJacocoExecutionData(List projects) {
+    FileCollection executionData = files()
+    executionData += files("${buildDir}/jacoco/testDebugUnitTest.exec")
+    projects.each {
+        def projDir = project(it).buildDir
+        executionData += files("${projDir}/jacoco/testDebugUnitTest.exec")
+    }
+    return executionData
+}
+
+task testCoverage(type: JacocoReport,
+        dependsOn: [
+                ":features:testDebugUnitTest",
+                ":core:testDebugUnitTest",
+                ":network:testDebugUnitTest",
+                ":app:testDebugUnitTest"
+        ]) {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html {
+            destination file("${buildDir}/reports/coverage")
+        }
+    }
+
+    def dependencies = [":network", ":features", ":core"]
+    classDirectories = getJacocoClassDirs(dependencies)
+    sourceDirectories = getJacocoSrcDirs(dependencies)
+    executionData = getJacocoExecutionData(dependencies)
+    for (int i=0; i<classDirectories.size(); i++) {
+        print("\n"+classDirectories[i])
+    }
+    doLast {
+        println "Jacoco coverage report has been generated to file://${reports.html.destination}/index.html"
+    }
 }
