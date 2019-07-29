@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.empty_search_results.*
 import kotlinx.android.synthetic.main.fragment_search_result.*
-import nz.co.warehouseandroidtest.ProductDetailActivity
+import nz.co.warehouseandroidtest.productdetails.ProductDetailActivity
 import nz.co.warehouseandroidtest.R
 import nz.co.warehouseandroidtest.Utils.PreferenceUtil
 import nz.co.warehouseandroidtest.core.entity.SearchCriteriaParam
@@ -98,7 +98,7 @@ class SearchResultFragment: Fragment(), OnSearchResultItemClickListener {
     override fun onSearchResultItemClicked(product: Product, pos: Int) {
         val intent = Intent()
         intent.setClass(context, ProductDetailActivity::class.java)
-        intent.putExtra(ProductDetailActivity.FLAG_BAR_CODE, product.imageURL)
+        intent.putExtra(ProductDetailActivity.FLAG_BAR_CODE, product.barcode)
         context?.startActivity(intent)
     }
 

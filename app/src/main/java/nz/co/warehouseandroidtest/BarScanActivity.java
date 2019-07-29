@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.uuzuche.lib_zxing.activity.CaptureFragment;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
+import nz.co.warehouseandroidtest.productdetails.ProductDetailActivity;
+
 public class BarScanActivity extends AppCompatActivity {
 
     private CaptureFragment captureFragment = new CaptureFragment();
@@ -50,7 +52,6 @@ public class BarScanActivity extends AppCompatActivity {
         public void onAnalyzeSuccess(Bitmap mBitmap, String result) {
             Intent intent = new Intent();
             intent.setClass(BarScanActivity.this, ProductDetailActivity.class);
-            intent.putExtra(ProductDetailActivity.FLAG_INTENT_SOURCE, ProductDetailActivity.FLAG_INTENT_SOURCE_SCAN);
             intent.putExtra(ProductDetailActivity.FLAG_BAR_CODE, result);
             startActivity(intent);
         }

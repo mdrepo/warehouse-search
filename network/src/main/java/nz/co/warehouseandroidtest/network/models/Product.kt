@@ -26,4 +26,6 @@ data class Product (
 data class Price(
     @SerializedName("Price") val price: String?,
     @SerializedName("Type") val type: String?
-)
+) {
+    fun isClearance() = "CLR".equals(type, ignoreCase = true)
+}
