@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import nz.co.warehouseandroidtest.Utils.PreferenceUtil;
 import nz.co.warehouseandroidtest.data.User;
+import nz.co.warehouseandroidtest.searchproducts.SearchActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

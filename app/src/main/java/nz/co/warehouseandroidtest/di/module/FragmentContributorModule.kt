@@ -1,9 +1,9 @@
-package nz.co.warehouseandroidtest.di.modules
+package nz.co.warehouseandroidtest.di.module
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import nz.co.warehouseandroidtest.di.scopes.PerFragment
-import nz.co.warehouseandroidtest.features.searchproducts.di.SearchProductModule
+import nz.co.warehouseandroidtest.features.searchproducts.di.module.SearchProductModule
 import nz.co.warehouseandroidtest.searchproducts.SearchResultFragment
 
 /**

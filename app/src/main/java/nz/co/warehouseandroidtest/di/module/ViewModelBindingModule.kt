@@ -1,4 +1,4 @@
-package nz.co.warehouseandroidtest.di.modules
+package nz.co.warehouseandroidtest.di.module
 
 import androidx.lifecycle.ViewModelProvider
 import dagger.Binds

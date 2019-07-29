@@ -1,10 +1,12 @@
-package nz.co.warehouseandroidtest;
+package nz.co.warehouseandroidtest.searchproducts;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+
+import nz.co.warehouseandroidtest.R;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -15,16 +17,13 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        searchView = (SearchView) findViewById(R.id.search_view);
+        searchView = findViewById(R.id.search_view);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (null != query && query.length() > 0) {
-                    Intent intent = new Intent();
-                    intent.setClass(SearchActivity.this, SearchResultActivity.class);
-                    intent.putExtra(SearchResultActivity.FLAG_KEY_WORD, query);
-                    startActivity(intent);
+                    startActivity(SearchResultActivity.newIntent(SearchActivity.this, query));
                 }
                 return true;
             }

@@ -2,5 +2,12 @@
 <resources>
 
     <dimen name="recyclerview_out_rec_top">6dp</dimen>
-
+    <dimen name="padding">8dp</dimen>
+    <dimen name="spacing_normal">4dp</dimen>
+    <dimen name="empty_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="margin">8dp</dimen>
+    <dimen name="list_item_card_elevation">4dp</dimen>
+    <dimen name="margin_text">4dp</dimen>
+    <dimen name="search_list_image_dimension">100dp</dimen>
 </resources>
