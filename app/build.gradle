@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
+apply from: "${rootProject.rootDir}/gradle/kotlin.gradle"
+apply from: "${rootProject.rootDir}/gradle/dagger.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -50,4 +49,15 @@ dependencies {
     // glide
     implementation "com.github.bumptech.glide:glide:$glideVersion.version"
     implementation "jp.wasabeef:glide-transformations:$glideVersion.transformations"
+
+    implementation project(":features")
+    implementation project(':core')
+
+    // android-dagger
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion" // if support libraries are used
+    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
+    kaptTest "com.google.dagger:dagger-android-processor:$daggerVersion"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.paging:paging-runtime-ktx:2.1.0'
 }
