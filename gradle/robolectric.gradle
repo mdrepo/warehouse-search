@@ -1,0 +1,12 @@
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "androidx.test:rules:$androidxTestVersion.rules"
+    testImplementation "androidx.test:runner:$androidxTestVersion.runner"
+    testImplementation "androidx.arch.core:core-testing:$androidxVersion.arch"
+
+    // Kotlin Test Libs
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlinVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
+}

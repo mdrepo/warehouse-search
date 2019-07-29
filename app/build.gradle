@@ -3,6 +3,7 @@ apply from: "${rootProject.rootDir}/gradle/kotlin.gradle"
 apply from: "${rootProject.rootDir}/gradle/dagger.gradle"
 apply from: "${rootProject.rootDir}/gradle/robolectric.gradle"
 apply from: "${rootProject.rootDir}/gradle/jacoco.gradle"
+apply from: "${rootProject.rootDir}/gradle/testoptions.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -67,7 +68,6 @@ afterEvaluate { project ->
 }
 
 FileTree getJacocoClassDirs(List projects) {
-    print("${project.ext.jacocoExclusion}")
     def classDirs = fileTree(
             dir: "${buildDir}",
             include: project.ext.jacocoInclusion,
@@ -122,9 +122,7 @@ task testCoverage(type: JacocoReport,
     classDirectories = getJacocoClassDirs(dependencies)
     sourceDirectories = getJacocoSrcDirs(dependencies)
     executionData = getJacocoExecutionData(dependencies)
-    for (int i=0; i<classDirectories.size(); i++) {
-        print("\n"+classDirectories[i])
-    }
+
     doLast {
         println "Jacoco coverage report has been generated to file://${reports.html.destination}/index.html"
     }
