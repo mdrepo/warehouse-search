@@ -1,0 +1,23 @@
+android.testOptions.unitTests {
+    includeAndroidResources = true
+
+    all {
+        include rootProject.hasProperty("testSuite") ? "**/${rootProject.ext.testSuite}.class" : "**/*Test.class"
+        jvmArgs '-noverify'
+        // Configure max heap size of the test JVM
+        minHeapSize = '256m'
+        maxHeapSize = '2048m'
+
+        maxParallelForks = 2
+        forkEvery = project.hasProperty("testForkEvery") ? "${project.ext.testForkEvery}".toLong() : 0
+
+        testLogging {
+            events('passed', 'skipped', 'failed', 'standardOut', 'standardError')
+            exceptionFormat 'full'
+        }
+
+        jacoco {
+            includeNoLocationClasses = true
+        }
+    }
+}

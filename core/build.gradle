@@ -1,0 +1,34 @@
+apply plugin: 'com.android.library'
+apply from: "${rootProject.rootDir}/gradle/kotlin.gradle"
+apply from: "${rootProject.rootDir}/gradle/jacoco.gradle"
+apply from: "${rootProject.rootDir}/gradle/dagger.gradle"
+apply from: "${rootProject.rootDir}/gradle/testoptions.gradle"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.compileSdkVersion
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    api project(':network')
+    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+}
+
+afterEvaluate { project ->
+    setupJacoco(project)
+}
+

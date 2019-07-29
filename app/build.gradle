@@ -1,12 +1,16 @@
 apply plugin: 'com.android.application'
+apply from: "${rootProject.rootDir}/gradle/kotlin.gradle"
+apply from: "${rootProject.rootDir}/gradle/dagger.gradle"
+apply from: "${rootProject.rootDir}/gradle/robolectric.gradle"
+apply from: "${rootProject.rootDir}/gradle/jacoco.gradle"
+apply from: "${rootProject.rootDir}/gradle/testoptions.gradle"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "nz.co.warehouseandroidtest"
-        minSdkVersion 21
-        //noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 28
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.compileSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -21,30 +25,105 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'com.android.support:design:27.1.0'
+    implementation "androidx.appcompat:appcompat:$androidxVersion.appCompat"
+    implementation "androidx.constraintlayout:constraintlayout:$androidxVersion.constraintLayout"
+
+    implementation "com.android.support:design:$androidSupportVersion.design"
 
     // retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion.version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion.gsonConvertor"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion.rxjavaAdapter"
 
     // okhttp
-    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
-    implementation 'com.squareup.okio:okio:1.15.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+    implementation "com.squareup.okhttp3:okhttp:$okHttpVersion.version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion.loggingInterceptor"
 
     // zxing
-    implementation 'cn.yipianfengye.android:zxing-library:2.2'
+    implementation ("cn.yipianfengye.android:zxing-library:2.2") {
+        exclude group: 'com.android.support', module: 'support-v4'
+    }
 
     // gson
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation "com.google.code.gson:gson:$gsonVersion"
 
     // glide
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
-    implementation 'jp.wasabeef:glide-transformations:2.0.1'
+    implementation "com.github.bumptech.glide:glide:$glideVersion.version"
+    implementation "jp.wasabeef:glide-transformations:$glideVersion.transformations"
+
+    implementation project(":features")
+    implementation project(':core')
+
+    // android-dagger
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
+    kaptTest "com.google.dagger:dagger-android-processor:$daggerVersion"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.paging:paging-runtime-ktx:2.1.0'
+}
+
+afterEvaluate { project ->
+    setupJacoco(project)
+}
+
+FileTree getJacocoClassDirs(List projects) {
+    def classDirs = fileTree(
+            dir: "${buildDir}",
+            include: project.ext.jacocoInclusion,
+            exclude: project.ext.jacocoExclusion
+    )
+    projects.each {
+        def projBuildDir = project(it).buildDir
+        classDirs += fileTree(
+                dir: "${projBuildDir}",
+                include: project.ext.jacocoInclusion,
+                exclude: project.ext.jacocoExclusion
+        )
+    }
+    return classDirs
+}
+
+FileCollection getJacocoSrcDirs(List projects) {
+    HashSet srcDirs = android.sourceSets.main.java.srcDirs
+    projects.each {
+        def projDir = project(it).projectDir
+        srcDirs.add("${projDir}/src/main")
+    }
+    return files(srcDirs)
+}
+
+FileCollection getJacocoExecutionData(List projects) {
+    FileCollection executionData = files()
+    executionData += files("${buildDir}/jacoco/testDebugUnitTest.exec")
+    projects.each {
+        def projDir = project(it).buildDir
+        executionData += files("${projDir}/jacoco/testDebugUnitTest.exec")
+    }
+    return executionData
+}
+
+task testCoverage(type: JacocoReport,
+        dependsOn: [
+                ":features:testDebugUnitTest",
+                ":core:testDebugUnitTest",
+                ":network:testDebugUnitTest",
+                ":app:testDebugUnitTest"
+        ]) {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html {
+            destination file("${buildDir}/reports/coverage")
+        }
+    }
+
+    def dependencies = [":network", ":features", ":core"]
+    classDirectories = getJacocoClassDirs(dependencies)
+    sourceDirectories = getJacocoSrcDirs(dependencies)
+    executionData = getJacocoExecutionData(dependencies)
+
+    doLast {
+        println "Jacoco coverage report has been generated to file://${reports.html.destination}/index.html"
+    }
 }

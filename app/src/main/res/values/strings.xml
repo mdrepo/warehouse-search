@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">WarehouseAndroidTest</string>
+    <string name="retry">Retry</string>
+    <string name="error">Error. Please try again.</string>
+    <string name="empty_search_title">No results so far!</string>
+    <string name="empty_search_text">Did you misspell the product? Try changing the query.</string>
+    <string name="refine_search">Search again</string>
 </resources>

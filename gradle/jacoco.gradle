@@ -1,0 +1,59 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.3"
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+}
+
+ext {
+    jacocoExec = ["**/jacoco/*test*.exec"]
+    jacocoInclusion = "**/kotlin-classes/debug/**/nz/co/warehouseandroidtest/**"
+    jacocoExclusion = [
+                        "**/adapter/CoroutineCallAdapterFactory*",
+                        "**/api/**",
+                        "**/models/**",
+                        '**/R.class',
+                       '**/R$*.class',
+                       '**/BuildConfig.class',
+                       '**/entity/*', // Entity classes in core module
+
+                       /* Begin: Dagger Generated Classes */
+                       '**/di/components/*',
+                       '**/di/module/*',
+                       '**/di/scopes/*',
+                       '**/di/annotations/*',
+                       '**/Dagger*',
+                       '**/*_MembersInjector*',
+                       '**/*_Factory*',
+                       /* End  : Dagger Generated Classes */
+
+                       /* Begin: Room Generated Classes */
+                       '**/*_Impl*'
+                       /* End  : Room Generated Classes */]
+}
+
+ext.setupJacoco = { project ->
+    task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
+        group = "Reporting"
+        description = "Generate Jacoco coverage report"
+
+        reports {
+            html.enabled = true
+            xml.enabled = false
+        }
+
+        classDirectories = fileTree(dir: project.buildDir,
+                include: project.ext.jacocoInclusion,
+                exclude: project.ext.jacocoExclusion)
+        sourceDirectories = files(["${project.projectDir}/src/main/java",
+                                   "${project.projectDir}/src/main/kotlin"])
+        executionData fileTree(dir: project.projectDir, include: project.ext.jacocoExec)
+
+        doLast {
+            println "Jacoco coverage report has been generated to file://${reports.html.destination}/index.html"
+        }
+    }
+}
