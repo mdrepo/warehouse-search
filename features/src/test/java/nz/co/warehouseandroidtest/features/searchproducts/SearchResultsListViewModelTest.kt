@@ -32,7 +32,6 @@ class SearchResultsListViewModelTest {
         on { retry } doReturn retryFunc
         on { totalItems } doReturn totalItemsLiveData
     }
-    private val cachedListingIds = MutableLiveData<List<Long>>()
 
     private val useCase: SearchProductsUseCase = mock {
         on { searchProducts(any(), any()) } doReturn resource

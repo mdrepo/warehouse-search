@@ -17,8 +17,7 @@ class ProductDetailUseCase @Inject constructor(
     private val coroutineContexts: CoroutineContexts
 ) {
     private val networkState = MutableLiveData<NetworkState>()
-    private val listing = MutableLiveData<ProductDetailResponse>()
-    private var retryFunc: (() -> Unit)? = null
+    private val product = MutableLiveData<ProductDetailResponse>()
 
     fun dispatchFetchProduct(userId: String?, barCode: String?): DataResource<ProductDetailResponse> {
         CoroutineScope(coroutineContexts.background).launch {
@@ -27,13 +26,12 @@ class ProductDetailUseCase @Inject constructor(
                 barCode = barCode
             ))
             if (productDetailResponse != null) {
-                listing.postValue(productDetailResponse)
+                product.postValue(productDetailResponse)
             }
         }
         return DataResource<ProductDetailResponse>(
             networkState = networkState,
-            data = listing,
-            retry = retryFunc
+            data = product
         )
     }
 
@@ -51,5 +49,9 @@ class ProductDetailUseCase @Inject constructor(
                 null
             }
         }
+    }
+
+    fun unsubscribe() {
+        coroutineContexts.cancel()
     }
 }

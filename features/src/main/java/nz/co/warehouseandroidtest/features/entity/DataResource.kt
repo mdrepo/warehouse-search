@@ -5,6 +5,5 @@ import nz.co.warehouseandroidtest.core.entity.NetworkState
 
 data class DataResource<T>(
     val networkState: LiveData<NetworkState>,
-    val data: LiveData<T>,
-    val retry: (() -> Unit)?
+    val data: LiveData<T>
 )
