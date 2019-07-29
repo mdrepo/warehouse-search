@@ -3,10 +3,11 @@ package nz.co.warehouseandroidtest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.uuzuche.lib_zxing.activity.CaptureFragment;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
@@ -26,7 +27,7 @@ public class BarScanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bar_scan);
 
         ivFlashToggle = (ImageView) findViewById(R.id.iv_flashlight);
-        ivFlashToggle.setImageDrawable(getDrawable(R.mipmap.ic_flash_off_black_24dp));
+        ivFlashToggle.setImageDrawable(getResources().getDrawable(R.mipmap.ic_flash_off_black_24dp));
         ivFlashToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,6 +41,8 @@ public class BarScanActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_zxing_container, captureFragment).commit();
     }
+
+
 
     private CodeUtils.AnalyzeCallback analyzeCallback = new CodeUtils.AnalyzeCallback() {
 
@@ -62,11 +65,11 @@ public class BarScanActivity extends AppCompatActivity {
     void toggleFlashlight() {
         if (!isOpen) {
             CodeUtils.isLightEnable(true);
-            ivFlashToggle.setImageDrawable(getDrawable(R.mipmap.ic_flash_on_black_24dp));
+            ivFlashToggle.setImageDrawable(getResources().getDrawable(R.mipmap.ic_flash_on_black_24dp));
             isOpen = true;
         } else {
             CodeUtils.isLightEnable(false);
-            ivFlashToggle.setImageDrawable(getDrawable(R.mipmap.ic_flash_off_black_24dp));
+            ivFlashToggle.setImageDrawable(getResources().getDrawable(R.mipmap.ic_flash_off_black_24dp));
             isOpen = false;
         }
     }
