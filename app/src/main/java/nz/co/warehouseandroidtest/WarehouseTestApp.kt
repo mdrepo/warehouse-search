@@ -43,7 +43,7 @@ class WarehouseTestApp : Application(), HasSupportFragmentInjector, HasActivityI
         builder.addInterceptor(object : Interceptor {
             @Throws(IOException::class)
             override fun intercept(chain: Interceptor.Chain): Response {
-                val request = chain.request().newBuilder().addHeader("Ocp-Apim-Subscription-Key", Constants.SUBSCRIPTION_KEY).build()
+                val request = chain.request().newBuilder().addHeader("Ocp-Apim-Subscription-Key", "").build()
                 return chain.proceed(request)
             }
         })
