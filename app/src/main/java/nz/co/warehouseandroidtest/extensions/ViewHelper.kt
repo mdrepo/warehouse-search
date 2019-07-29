@@ -1,6 +1,7 @@
 package nz.co.warehouseandroidtest.extensions
 
 import android.view.View
+import android.widget.TextView
 
 /**
  * True if this View's visibility is [View.VISIBLE].
@@ -12,3 +13,11 @@ inline var View.visible: Boolean
     set(value) {
         visibility = if (value) View.VISIBLE else View.GONE
     }
+
+inline fun TextView.setTextorHide(input: String?) {
+    if (!input.isNullOrEmpty()) {
+        text = input
+    } else {
+        visible = false
+    }
+}

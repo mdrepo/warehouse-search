@@ -5,6 +5,7 @@ import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.runBlocking
 import nz.co.warehouseandroidtest.core.data.product.ProductDataSource
 import nz.co.warehouseandroidtest.core.data.product.ProductRepository
+import nz.co.warehouseandroidtest.core.entity.ProductDetailParam
 import nz.co.warehouseandroidtest.core.entity.SearchCriteriaParam
 import org.junit.Test
 
@@ -19,6 +20,15 @@ class ProductRepositoryTest {
             val param: SearchCriteriaParam = mock { }
             repository.getProducts(1, 20, param)
             verify(remoteDataSource).getProducts(1, 20, param)
+        }
+    }
+
+    @Test
+    fun `get product detail`() {
+        runBlocking {
+            val param: ProductDetailParam = mock { }
+            repository.getProductDetail(param)
+            verify(remoteDataSource).getProductDetail(param)
         }
     }
 }

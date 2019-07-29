@@ -1,5 +1,6 @@
 package nz.co.warehouseandroidtest
 
+import android.app.Activity
 import android.app.Application
 import androidx.fragment.app.Fragment
 
@@ -7,6 +8,7 @@ import com.google.gson.GsonBuilder
 import com.uuzuche.lib_zxing.activity.ZXingLibrary
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
 import dagger.android.support.HasSupportFragmentInjector
 import nz.co.warehouseandroidtest.core.di.components.DaggerCoreComponent
 import nz.co.warehouseandroidtest.di.components.DaggerAppComponent
@@ -20,12 +22,16 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
-class WarehouseTestApp : Application(), HasSupportFragmentInjector {
+class WarehouseTestApp : Application(), HasSupportFragmentInjector, HasActivityInjector {
 
     @Inject
     lateinit var dispatchingFragmentInjector: DispatchingAndroidInjector<Fragment>
+    @Inject
+    lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = dispatchingFragmentInjector
+
+    override fun activityInjector(): AndroidInjector<Activity> = dispatchingActivityInjector
 
     var warehouseService: WarehouseService? = null
         private set
@@ -37,7 +43,7 @@ class WarehouseTestApp : Application(), HasSupportFragmentInjector {
         builder.addInterceptor(object : Interceptor {
             @Throws(IOException::class)
             override fun intercept(chain: Interceptor.Chain): Response {
-                val request = chain.request().newBuilder().addHeader("Ocp-Apim-Subscription-Key", Constants.SUBSCRIPTION_KEY).build()
+                val request = chain.request().newBuilder().addHeader("Ocp-Apim-Subscription-Key", "").build()
                 return chain.proceed(request)
             }
         })

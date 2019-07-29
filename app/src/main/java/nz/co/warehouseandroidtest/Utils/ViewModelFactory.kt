@@ -1,4 +1,4 @@
-package nz.co.warehouseandroidtest
+package nz.co.warehouseandroidtest.Utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

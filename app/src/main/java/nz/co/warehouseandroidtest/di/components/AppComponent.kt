@@ -4,6 +4,7 @@ import dagger.Component
 import dagger.android.AndroidInjector
 import nz.co.warehouseandroidtest.WarehouseTestApp
 import nz.co.warehouseandroidtest.core.di.components.CoreComponent
+import nz.co.warehouseandroidtest.di.module.ActivityContributorModule
 import nz.co.warehouseandroidtest.di.module.FragmentContributorModule
 import nz.co.warehouseandroidtest.di.module.ViewModelBindingModule
 import nz.co.warehouseandroidtest.di.scopes.AppScope
@@ -11,7 +12,8 @@ import nz.co.warehouseandroidtest.di.scopes.AppScope
 @AppScope
 @Component(modules = [
     ViewModelBindingModule::class,
-    FragmentContributorModule::class
+    FragmentContributorModule::class,
+    ActivityContributorModule::class
 ], dependencies = [
     CoreComponent::class
 ])
