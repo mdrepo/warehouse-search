@@ -111,8 +111,12 @@ task testCoverage(type: JacocoReport,
                 ":network:testDebugUnitTest",
                 ":app:testDebugUnitTest"
         ]) {
+    coveralls {
+        jacocoReportPath "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+    }
     reports {
         xml {
+            enabled true
             destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
         }
         csv.enabled false
