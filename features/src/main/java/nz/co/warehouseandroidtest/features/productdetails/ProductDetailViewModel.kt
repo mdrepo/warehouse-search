@@ -13,6 +13,7 @@ class ProductDetailViewModel @Inject constructor(
     private val useCase: ProductDetailUseCase
 ) : ViewModel() {
     private val _barcode = MutableLiveData<String>()
+    private var userId: String? = null
     private val dataResource: MutableLiveData<DataResource<ProductDetailResponse>> = MutableLiveData()
     val product: LiveData<ProductDetailResponse> = Transformations.switchMap(dataResource) {
         it.data
@@ -26,7 +27,12 @@ class ProductDetailViewModel @Inject constructor(
             return
         }
         _barcode.value = barcode
+        this.userId = userId
         dataResource.value = useCase.dispatchFetchProduct(userId = userId, barCode = barcode)
+    }
+
+    fun retry() {
+        dataResource.value = useCase.dispatchFetchProduct(userId = userId, barCode = _barcode.value)
     }
 
     public override fun onCleared() {
