@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_product_detail.*
 import nz.co.warehouseandroidtest.R
@@ -32,7 +33,9 @@ class ProductDetailActivity : AppCompatActivity() {
             viewModel.setProductRequest(PreferenceUtil.getUserId(this), barCode)
         }
         viewModel.networkState.observe(this, Observer {
-
+            if (it.isError()) {
+                showError()
+            }
         })
         viewModel.product.observe(this, Observer {
             show(it)
@@ -51,7 +54,14 @@ class ProductDetailActivity : AppCompatActivity() {
         }
     }
 
-
+    private fun showError() {
+        Snackbar
+            .make(root, R.string.error, Snackbar.LENGTH_INDEFINITE)
+            .setAction(R.string.retry) {
+                viewModel.retry()
+            }
+            .show()
+    }
     companion object {
         const val FLAG_BAR_CODE = "barCode"
     }
