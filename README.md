@@ -1,4 +1,5 @@
 # Ware house search app
+![Build Status](https://travis-ci.org/mdrepo/warehouse-search.svg?branch=master) [![Coverage Status](https://coveralls.io/repos/github/mdrepo/warehouse-search/badge.svg?branch=master)](https://coveralls.io/github/mdrepo/warehouse-search?branch=master)
 Simple app to search warehouse products
 
 ## Instructions
