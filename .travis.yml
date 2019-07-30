@@ -38,4 +38,4 @@ before_script:
   -
 script: "./gradlew assembleDebug && ./gradlew appCheck"
 after_success:
-  - ./gradlew :app:testCoverage
+  - ./gradlew :app:testCoverage coveralls

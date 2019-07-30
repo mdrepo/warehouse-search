@@ -4,6 +4,7 @@ apply from: "${rootProject.rootDir}/gradle/dagger.gradle"
 apply from: "${rootProject.rootDir}/gradle/robolectric.gradle"
 apply from: "${rootProject.rootDir}/gradle/jacoco.gradle"
 apply from: "${rootProject.rootDir}/gradle/testoptions.gradle"
+apply plugin: 'com.github.kt3k.coveralls'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -111,7 +112,9 @@ task testCoverage(type: JacocoReport,
                 ":app:testDebugUnitTest"
         ]) {
     reports {
-        xml.enabled false
+        xml {
+            destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+        }
         csv.enabled false
         html {
             destination file("${buildDir}/reports/coverage")
@@ -124,6 +127,7 @@ task testCoverage(type: JacocoReport,
     executionData = getJacocoExecutionData(dependencies)
 
     doLast {
+        println "coveralls report has been generated to file://${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         println "Jacoco coverage report has been generated to file://${reports.html.destination}/index.html"
     }
 }
